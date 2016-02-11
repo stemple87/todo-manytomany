@@ -14,12 +14,10 @@ namespace ToDoList
       _instances.Add(this);
       _id = _instances.Count;
     }
-
     public string GetDescription()
     {
       return _description;
     }
-
     public void SetDescription(string newDescription)
     {
       _description = newDescription;

@@ -44,13 +44,29 @@ namespace ToDoList
         model.Add("task", returnTask);
         return  View["task.cshtml",model];
       };
+      //jill's delete task
+      Post["/deleteTask/{id}/task/{taskId}"]=parameters=>{
+        Dictionary<string, object> model = new Dictionary<string, object>();
+        var selectedCategory = Category.Find(parameters.id);
+        List<Task> allTasks = Task.GetAll();
+        Task task = allTasks[parameters.taskId-1];
+        task.ClearTask();
+        // selectedCategory.RemoveTask(task);
+        var categoryTasks = selectedCategory.GetTasks();
+        model.Add("category", selectedCategory);
+        model.Add("tasks", categoryTasks);
+        return View["category.cshtml", model];
+      };
       //deltet a task
-      Post["/delete/{id}/task/{taskId}"]=parameters=>{
+      Get["/delete/{id}/task/{taskId}"]=parameters=>{
+        Dictionary<string, object> model = new Dictionary<string, object>();
         Category selectedCategory = Category.Find(parameters.id);
         List<Task> allTasks = Task.GetAll();
         Task task = allTasks[parameters.taskId-1];
         selectedCategory.RemoveTask(task);
-        return View["index.cshtml"];
+        model.Add("category", selectedCategory);
+        model.Add("tasks", allTasks);
+        return View["category.cshtml",model];
       };
       Get["/categories/{id}/tasks/new"] = parameters => {
         Dictionary<string, object> model = new Dictionary<string, object>();
@@ -59,6 +75,16 @@ namespace ToDoList
         model.Add("category", selectedCategory);
         model.Add("tasks", allTasks);
         return View["category_tasks_form.cshtml", model];
+      };
+      Post["/categories/{id}/task/{taskId}"] = parameters => {
+        Dictionary<string, object> model = new Dictionary<string, object>();
+        var selectedCategory = Category.Find(parameters.id);
+        var categoryTasks = selectedCategory.GetTasks();
+        Task task = categoryTasks[parameters.taskId-1];
+        task.SetDescription(Request.Form["edit"]);
+        model.Add("category", selectedCategory);
+        model.Add("tasks", categoryTasks);
+        return View["category.cshtml", model];
       };
       Post["/tasks"] = _ => {
         Dictionary<string, object> model = new Dictionary<string, object>();
