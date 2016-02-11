@@ -6,7 +6,10 @@
   </head>
   <body>
     <h1>To Do List</h1>
-    <h1>@Model.GetDescription()</h1>
+    <h1>@Model["task"].GetDescription()</h1>
+    <form action="/delete/@Model["category"].GetId()/task/@Model["task"].GetId()" method="post">
+      <button type="submit" name="deleteTask">deleteTask</button>
+    </form>
     <a href='/tasks/new'>Add another task</a>
     <a href='/tasks'>View all tasks</a>
   </body>

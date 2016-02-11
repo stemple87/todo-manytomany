@@ -33,6 +33,10 @@ namespace ToDoList.Objects
     {
       _tasks.Add(task);
     }
+    public void RemoveTask(Task task)
+    {
+      _tasks.Remove(task);
+    }
     public static List<Category> GetAll()
     {
       return _instances;

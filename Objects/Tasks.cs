@@ -40,5 +40,13 @@ namespace ToDoList
     {
       return _instances[searchId-1];
     }
+    public void ClearTask()
+    {
+       _instances.Remove(this);
+    }
+    // public void ClearTask()
+    // {
+    //    _instances.RemoveAt(_id-1);
+    // }
   }
 }

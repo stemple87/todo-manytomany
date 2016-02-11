@@ -31,6 +31,27 @@ namespace ToDoList
         model.Add("tasks", categoryTasks);
         return View["category.cshtml", model];
       };
+      Get["/clear_categories"] =_=> {
+        Category.Clear();
+        return View ["index.cshtml"];
+      };
+      //view a task
+      Get["/categories/{id}/task/{taskId}"] = parameters => {
+        Dictionary<string, object> model = new Dictionary<string, object>();
+        Category selectedCategory = Category.Find(parameters.id);
+        Task returnTask = Task.Find(parameters.taskId);
+        model.Add("category", selectedCategory);
+        model.Add("task", returnTask);
+        return  View["task.cshtml",model];
+      };
+      //deltet a task
+      Post["/delete/{id}/task/{taskId}"]=parameters=>{
+        Category selectedCategory = Category.Find(parameters.id);
+        List<Task> allTasks = Task.GetAll();
+        Task task = allTasks[parameters.taskId-1];
+        selectedCategory.RemoveTask(task);
+        return View["index.cshtml"];
+      };
       Get["/categories/{id}/tasks/new"] = parameters => {
         Dictionary<string, object> model = new Dictionary<string, object>();
         Category selectedCategory = Category.Find(parameters.id);

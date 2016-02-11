@@ -8,12 +8,10 @@
   <ol>
   @foreach (var task in @Model["tasks"])
   {
-    <li>@task.GetDescription()</li>
+    <li><a href="/categories/@Model["category"].GetId()/task/@task.GetId()">@task.GetDescription()</a></li>
   }
   </ol>
   <p><a href='/categories/@Model["category"].GetId()/tasks/new'>Add a new task</a></p>
   <p><a href='/'>Return to Main Page</a></p>
 </body>
 </html>
-
-
