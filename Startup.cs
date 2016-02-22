@@ -4,6 +4,8 @@ using Nancy.Owin;
 using Nancy;
 using Nancy.ViewEngines.Razor;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace ToDoList
 {
@@ -37,5 +39,10 @@ namespace ToDoList
     {
       get { return false; }
     }
+  }
+  public static class DBConfiguration
+  {
+    //public static string ConnectionString = "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=todo;Integrated Security=SSPI;";
+    public static string ConnectionString = "Data Source=CHIYOKAWA\\SQLEXPRESS;Initial Catalog=todo;Integrated Security=SSPI;";
   }
 }
