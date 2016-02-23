@@ -1,53 +1,146 @@
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System;
 
-namespace ToDoList.Objects
+namespace ToDoList
 {
   public class Category
   {
-    private static List<Category> _instances = new List<Category> {};
-    private string _name;
     private int _id;
-    private List<Task> _tasks;
+    private string _name;
 
-    public Category(string categoryName)
+    public Category(string Name, int Id = 0)
     {
-      _name = categoryName;
-      _instances.Add(this);
-      _id = _instances.Count;
-      _tasks = new List<Task>{};
+      _id = Id;
+      _name = Name;
     }
 
-    public string GetName()
+    public override bool Equals(System.Object otherCategory)
     {
-      return _name;
+        if (!(otherCategory is Category))
+        {
+          return false;
+        }
+        else
+        {
+          Category newCategory = (Category) otherCategory;
+          bool idEquality = this.GetId() == newCategory.GetId();
+          bool nameEquality = this.GetName() == newCategory.GetName();
+          return (idEquality && nameEquality);
+        }
     }
+
     public int GetId()
     {
       return _id;
     }
-    public List<Task> GetTasks()
+    public string GetName()
     {
-      return _tasks;
+      return _name;
     }
-    public void AddTask(Task task)
+    public void SetName(string newName)
     {
-      _tasks.Add(task);
-    }
-    public void RemoveTask(Task task)
-    {
-      _tasks.Remove(task);
+      _name = newName;
     }
     public static List<Category> GetAll()
     {
-      return _instances;
+      List<Category> allCategories = new List<Category>{};
+
+      SqlConnection conn = DB.Connection();
+      SqlDataReader rdr = null;
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("SELECT * FROM categories;", conn);
+      rdr = cmd.ExecuteReader();
+
+      while(rdr.Read())
+      {
+        int categoryId = rdr.GetInt32(0);
+        string categoryName = rdr.GetString(1);
+        Category newCategory = new Category(categoryName, categoryId);
+        allCategories.Add(newCategory);
+      }
+
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+      if (conn != null)
+      {
+        conn.Close();
+      }
+
+      return allCategories;
     }
-    public static void Clear()
+
+    public void Save()
     {
-      _instances.Clear();
+      SqlConnection conn = DB.Connection();
+      SqlDataReader rdr;
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("INSERT INTO categories (name) OUTPUT INSERTED.id VALUES (@CategoryName);", conn);
+
+      SqlParameter nameParameter = new SqlParameter();
+      nameParameter.ParameterName = "@CategoryName";
+      nameParameter.Value = this.GetName();
+      cmd.Parameters.Add(nameParameter);
+      rdr = cmd.ExecuteReader();
+
+      while(rdr.Read())
+      {
+        this._id = rdr.GetInt32(0);
+      }
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+      if(conn != null)
+      {
+        conn.Close();
+      }
     }
-    public static Category Find(int searchId)
+
+    public static void DeleteAll()
     {
-      return _instances[searchId-1];
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+      SqlCommand cmd = new SqlCommand("DELETE FROM categories;", conn);
+      cmd.ExecuteNonQuery();
+    }
+
+    public static Category Find(int id)
+    {
+      SqlConnection conn = DB.Connection();
+      SqlDataReader rdr = null;
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("SELECT * FROM categories WHERE id = @CategoryId;", conn);
+      SqlParameter categoryIdParameter = new SqlParameter();
+      categoryIdParameter.ParameterName = "@CategoryId";
+      categoryIdParameter.Value = id.ToString();
+      cmd.Parameters.Add(categoryIdParameter);
+      rdr = cmd.ExecuteReader();
+
+      int foundCategoryId = 0;
+      string foundCategoryDescription = null;
+
+      while(rdr.Read())
+      {
+        foundCategoryId = rdr.GetInt32(0);
+        foundCategoryDescription = rdr.GetString(1);
+      }
+      Category foundCategory = new Category(foundCategoryDescription, foundCategoryId);
+
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+      if (conn != null)
+      {
+        conn.Close();
+      }
+      return foundCategory;
     }
   }
 }

@@ -8,11 +8,11 @@ using System.Data.SqlClient;
 namespace ToDoList
 {
   public class ToDoTest : IDisposable
-  {    
+  {
     public ToDoTest()
     {
-      DBConfiguration.ConnectionString = "Data Source=CHIYOKAWA\\SQLEXPRESS;Initial Catalog=todo_test;Integrated Security=SSPI;";
-      //DBConfiguration.ConnectionString = "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=todo_test;Integrated Security=SSPI;";
+      // DBConfiguration.ConnectionString = "Data Source=CHIYOKAWA\\SQLEXPRESS;Initial Catalog=todo_test;Integrated Security=SSPI;";
+      DBConfiguration.ConnectionString = "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=todo_test;Integrated Security=SSPI;";
     }
     [Fact]
     public void Test_DatabaseEmptyAtFirst()
@@ -27,8 +27,8 @@ namespace ToDoList
     public void Test_Equal_ReturnsTrueIfDescriptionsAreTheSame()
     {
       //Arrange, Act
-      Task firstTask = new Task("Mow the lawn");
-      Task secondTask = new Task("Mow the lawn");
+      Task firstTask = new Task("Mow the lawn", 1);
+      Task secondTask = new Task("Mow the lawn", 1);
 
       //Assert
       Assert.Equal(firstTask, secondTask);
@@ -37,7 +37,7 @@ namespace ToDoList
     public void Test_Save_AssignsIdToObject()
     {
       //Arrange
-      Task testTask = new Task("Mow the lawn");
+      Task testTask = new Task("Mow the lawn", 1);
 
       //Act
       testTask.Save();
@@ -54,7 +54,7 @@ namespace ToDoList
     public void Test_Find_FindsTaskInDatabase()
     {
       //Arrange
-      Task testTask = new Task("Mow the lawn");
+      Task testTask = new Task("Mow the lawn", 1);
       testTask.Save();
 
       //Act
