@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using ToDoList.Objects;
+// using ToDoList.Objects;
 using System.Data.SqlClient;
 
 namespace ToDoList
@@ -14,7 +14,7 @@ namespace ToDoList
     {
       _description = description;
       _id = id;
-      _categoryId = categoryId
+      _categoryId = categoryId;
     }
     public override bool Equals(System.Object otherTask)
     {
@@ -22,12 +22,13 @@ namespace ToDoList
         {
           return false;
         }
-        else
+        else 
         {
           Task newTask = (Task) otherTask;
-          bool idEquality = (this.GetId() == newTask.GetId());
-          bool descriptionEquality = (this.GetDescription() == newTask.GetDescription());
-          return (idEquality && descriptionEquality);
+          bool idEquality = this.GetId() == newTask.GetId();
+          bool descriptionEquality = this.GetDescription() == newTask.GetDescription();
+          bool categoryEquality = this.GetCategoryId() == newTask.GetCategoryId();
+          return (idEquality && descriptionEquality && categoryEquality);
         }
     }
     public int GetCategoryId()
