@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-// using ToDoList.Objects;
 using System.Data.SqlClient;
+using System;
 
 namespace ToDoList
 {
@@ -9,7 +9,7 @@ namespace ToDoList
     private int _id;
     private string _description;
     private int _categoryId;
-
+    private DateTime _datetime;
     public Task(string description, int categoryId, DateTime dateTime, int id=0)
     {
       _description = description;
@@ -35,11 +35,11 @@ namespace ToDoList
     }
     public DateTime GetDate()
     {
-      return _datetime
+      return _datetime;
     }
     public void SetDate(DateTime dateTime)
     {
-      _dateTime = dateTime;
+      _datetime = dateTime;
     }
     public int GetCategoryId()
     {
@@ -68,7 +68,6 @@ namespace ToDoList
       SqlCommand cmd = new SqlCommand("DELETE FROM tasks;", conn);
       cmd.ExecuteNonQuery();
     }
-    
     public static Task Find(int id)
     {
       SqlConnection conn = DB.Connection();
@@ -125,7 +124,7 @@ namespace ToDoList
 
       SqlParameter dateParameter = new SqlParameter();
       dateParameter.ParameterName = "@TaskDate";
-      dateParameter.Value = this.GetCategoryId();
+      dateParameter.Value = this.GetDate();
 
       cmd.Parameters.Add(descriptionParameter);
       cmd.Parameters.Add(categoryIdParameter);
@@ -163,7 +162,8 @@ namespace ToDoList
         int taskId = rdr.GetInt32(0);
         string taskDescription = rdr.GetString(1);
         int taskCategoryId = rdr.GetInt32(2);
-        Task newTask = new Task(taskDescription, taskCategoryId, taskId);
+        DateTime taskDate =  rdr.GetDateTime(3);
+        Task newTask = new Task(taskDescription, taskCategoryId, taskDate, taskId);
         AllTasks.Add(newTask);
       }
       if (rdr != null)

@@ -58,7 +58,6 @@ namespace ToDoList
 
       //Act
       Category savedCategory = Category.GetAll()[0];
-
       int result = savedCategory.GetId();
       int testId = testCategory.GetId();
 
@@ -84,16 +83,21 @@ namespace ToDoList
     {
       Category testCategory = new Category("Household chores");
       testCategory.Save();
-
-      Task firstTask = new Task("Mow the lawn", testCategory.GetId());
+      Task firstTask = new Task("Mow the lawn", testCategory.GetId(), new DateTime(2017,3,3));
       firstTask.Save();
-      Task secondTask = new Task("Do the dishes", testCategory.GetId());
+      Task secondTask = new Task("Do the dishes", testCategory.GetId(), new DateTime(2017,3,3));
       secondTask.Save();
-
-
       List<Task> testTaskList = new List<Task> {firstTask, secondTask};
       List<Task> resultTaskList = testCategory.GetTasks();
 
+      foreach (var coin in testTaskList)
+      {
+        Console.WriteLine(coin.GetDate());
+      }
+      foreach (var coin in resultTaskList)
+      {
+        Console.WriteLine(coin.GetDate());
+      }
       Assert.Equal(testTaskList, resultTaskList);
     }
 
