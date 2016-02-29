@@ -41,6 +41,12 @@ namespace ToDoList
         return View["success.cshtml"];
       };
 
+      Get["/categories/delete/{id}"] = parameters => {
+        Category newCategory = Category.Find(parameters.id);
+        newCategory.Delete();
+        List<Category> AllCategories = Category.GetAll();
+        return View["categories.cshtml",AllCategories];
+      };
       //Creates individual pages for category and task
       Get["tasks/{id}"] = parameters => {
         Dictionary<string, object> model = new Dictionary<string, object>();
@@ -51,6 +57,13 @@ namespace ToDoList
         model.Add("taskCategories", TaskCategories);
         model.Add("allCategories", AllCategories);
         return View["task.cshtml", model];
+      };
+
+      Get["/tasks/delete/{id}"] = parameters => {
+        Task newTask = Task.Find(parameters.id);
+        newTask.Delete();
+        List<Task> AllTasks = Task.GetAll();
+        return View["tasks.cshtml", AllTasks];
       };
 
       Get["categories/{id}"] = parameters => {
