@@ -20,6 +20,7 @@ namespace ToDoList
         List<Category> AllCategories = Category.GetAll();
         return View["categories.cshtml", AllCategories];
       };
+
       //Create a new task
       Get["/tasks/new"] = _ => {
         return View["tasks_form.cshtml"];
@@ -76,6 +77,8 @@ namespace ToDoList
         category.AddTask(task);
         return View["success.cshtml"];
       };
+
+
     }
   }
 }
