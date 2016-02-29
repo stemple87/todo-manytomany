@@ -6,16 +6,30 @@
   </head>
   <body>
     <h1>To Do List</h1>
-    <h1>@Model["task"].GetDescription()</h1>
-    <form action="/deleteTask/@Model["category"].GetId()/task/@Model["task"].GetId()" method="post">
-      <button type="submit" name="deleteTask">deleteTask-jill</button>
+    <h2>Task: @Model["task"].GetDescription()</h2>
+    <hr />
+    @if (@Model["taskCategories"].Count != 0)
+    {
+      <h4>This task has these categories:</h4>
+      <ul>
+        @foreach (var category in @Model["taskCategories"])
+        {
+          <li>@category.GetName()</li>
+        }
+      </ul>
+    }
+    <h4>Add a category to this task:</h4>
+    <form action='/task/add_category' method='post'>
+      <input id='task-id' name='task-id' type='hidden' value='@Model["task"].GetId()'>
+      <label for='category-id'>Select a category</label>
+      <select id='category-id' name='category-id' type='text'>
+        @foreach (var category in @Model["allCategories"])
+        {
+          <option value='@category.GetId()'>@category.GetName()</option>
+        }
+      </select>
+      <button type='submit'>Add</button>
     </form>
-    <form class="" action="/categories/@Model["category"].GetId()/task/@Model["task"].GetId()" method="post">
-      <input id ="edit" type="text" name="edit" value="">
-      <button type="submit" name="edit">Confirm Edit</button>
-    </form>
-    <a href="/delete/@Model["category"].GetId()/task/@Model["task"].GetId()">Delete Task - Neil</a>
-    <a href='/tasks/new'>Add another task</a>
-    <a href='/tasks'>View all tasks</a>
+    <p><a href="/">Return to Main Page</a></p>
   </body>
 </html>

@@ -1,21 +1,40 @@
 using Xunit;
-// using ToDoList.Objects;
-using System;
 using System.Collections.Generic;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 
 namespace ToDoList
 {
-  public class ToDoTest : IDisposable
+  public class TaskTest : IDisposable
   {
-    public ToDoTest()
+    public TaskTest()
     {
-      // DBConfiguration.ConnectionString = "Data Source=CHIYOKAWA\\SQLEXPRESS;Initial Catalog=todo_test;Integrated Security=SSPI;";
       DBConfiguration.ConnectionString = "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=todo_test;Integrated Security=SSPI;";
     }
     [Fact]
-    public void Test_DatabaseEmptyAtFirst()
+    public void Test_Delete_DeletesTaskAssociationsFromDatabase()
+    {
+      //Arrange
+      Category testCategory = new Category("Home stuff");
+      testCategory.Save();
+
+      string testDescription = "Mow the lawn";
+      Task testTask = new Task(testDescription);
+      testTask.Save();
+
+      //Act
+      testTask.AddCategory(testCategory);
+      testTask.Delete();
+
+      List<Task> resultCategoryTasks = testCategory.GetTasks();
+      List<Task> testCategoryTasks = new List<Task> {};
+
+      //Assert
+      Assert.Equal(testCategoryTasks, resultCategoryTasks);
+    }
+    [Fact]
+    public void Test_EmptyAtFirst()
     {
       //Arrange, Act
       int result = Task.GetAll().Count;
@@ -23,24 +42,41 @@ namespace ToDoList
       //Assert
       Assert.Equal(0, result);
     }
+
     [Fact]
-    public void Test_Equal_ReturnsTrueIfDescriptionsAreTheSame()
+    public void Test_EqualOverrideTrueForSameDescription()
     {
       //Arrange, Act
-      Task firstTask = new Task("Mow the lawn", 1, new DateTime(2017,2,18));
-      Task secondTask = new Task("Mow the lawn", 1, new DateTime(2017,2,18));
+      Task firstTask = new Task("Mow the lawn");
+      Task secondTask = new Task("Mow the lawn");
 
       //Assert
       Assert.Equal(firstTask, secondTask);
     }
+
     [Fact]
-    public void Test_Save_AssignsIdToObject()
+    public void Test_Save()
     {
       //Arrange
-      Task testTask = new Task("Mow the lawn", 1, new DateTime(2017,2,18));
+      Task testTask = new Task("Mow the lawn");
+      testTask.Save();
 
       //Act
+      List<Task> result = Task.GetAll();
+      List<Task> testList = new List<Task>{testTask};
+
+      //Assert
+      Assert.Equal(testList, result);
+    }
+
+    [Fact]
+    public void Test_SaveAssignsIdToObject()
+    {
+      //Arrange
+      Task testTask = new Task("Mow the lawn");
       testTask.Save();
+
+      //Act
       Task savedTask = Task.GetAll()[0];
 
       int result = savedTask.GetId();
@@ -51,21 +87,23 @@ namespace ToDoList
     }
 
     [Fact]
-    public void Test_Find_FindsTaskInDatabase()
+    public void Test_FindFindsTaskInDatabase()
     {
       //Arrange
-      Task testTask = new Task("Mow the lawn", 1, new DateTime(2017,2,18));
+      Task testTask = new Task("Mow the lawn");
       testTask.Save();
 
       //Act
-      Task foundTask = Task.Find(testTask.GetId());
+      Task result = Task.Find(testTask.GetId());
 
       //Assert
-      Assert.Equal(testTask, foundTask);
+      Assert.Equal(testTask, result);
     }
+
     public void Dispose()
     {
       Task.DeleteAll();
+      Category.DeleteAll();
     }
   }
 }
