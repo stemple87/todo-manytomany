@@ -9,7 +9,27 @@
     @{
       if(Model != null)
       {
-        <h2>Task: @Model["task"].GetDescription()</h2>
+        <h2>Task: @Model["task"].GetDescription() Completed: @Model["task"].GetCompleted()</h2>
+        <hr />
+        <form action='/tasks/@Model["task"].GetId()' method="post">
+          <label for='description'>Update name</label>
+          <input type="text" id="description" name="description" value="@Model["task"].GetDescription()">
+          <select id='task-done' name='task-done' type='text'>
+            @{
+              if(Model["task"].GetCompleted() == true)
+              {
+                <option value='true' selected='selected'>true</option>
+                <option value='false'>false</option>
+              }
+              else
+              {
+                <option value='true'>true</option>
+                <option value='false' selected='selected'>false</option>
+              }
+            }
+          </select>
+          <button type="submit" name="button">Update</button>
+        </form>
         <hr />
         @if (@Model["taskCategories"].Count != 0)
         {
@@ -33,6 +53,7 @@
           <option value='@category.GetId()'>@category.GetName()</option>
         }
       </select>
+      <label for='task-done'>Task Complete?</label>
       <button type='submit'>Add</button>
     </form>
     <p><a href="/">Return to Main Page</a></p>

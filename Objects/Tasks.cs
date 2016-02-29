@@ -262,5 +262,46 @@ namespace ToDoList
       }
       return categories;
     }
+
+    public void Update(string newDescription, bool newBool)
+    {
+      SqlConnection conn = DB.Connection();
+      SqlDataReader rdr;
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("UPDATE tasks SET description = @NewDescription, completed = @NewBool OUTPUT INSERTED.description, INSERTED.completed WHERE id = @TasksId;", conn);
+
+      SqlParameter newDescriptionParameter = new SqlParameter();
+      newDescriptionParameter.ParameterName = "@NewDescription";
+      newDescriptionParameter.Value = newDescription;
+      cmd.Parameters.Add(newDescriptionParameter);
+
+      SqlParameter newBoolParameter = new SqlParameter();
+      newBoolParameter.ParameterName = "@NewBool";
+      newBoolParameter.Value = newBool;
+      cmd.Parameters.Add(newBoolParameter);
+
+      SqlParameter clientIdParameter = new SqlParameter();
+      clientIdParameter.ParameterName = "@TasksId";
+      clientIdParameter.Value = this.GetId();
+      cmd.Parameters.Add(clientIdParameter);
+      rdr = cmd.ExecuteReader();
+
+      while(rdr.Read())
+      {
+        this._description = rdr.GetString(0);
+        this._completed = rdr.GetBoolean(1);
+      }
+
+      if (rdr != null)
+      {
+        rdr.Close();
+      }
+
+      if (conn != null)
+      {
+        conn.Close();
+      }
+    }
   }
 }

@@ -59,6 +59,18 @@ namespace ToDoList
         return View["task.cshtml", model];
       };
 
+      Post["tasks/{id}"] = parameters => {
+        Dictionary<string, object> model = new Dictionary<string, object>();
+        Task SelectedTask = Task.Find(parameters.id);
+        SelectedTask.Update(Request.Form["description"],(bool)Request.Form["task-done"]);
+        List<Category> TaskCategories = SelectedTask.GetCategories();
+        List<Category> AllCategories = Category.GetAll();
+        model.Add("task", SelectedTask);
+        model.Add("taskCategories", TaskCategories);
+        model.Add("allCategories", AllCategories);
+        return View["task.cshtml", model];
+      };
+
       Get["/tasks/delete/{id}"] = parameters => {
         Task newTask = Task.Find(parameters.id);
         newTask.Delete();
@@ -77,11 +89,15 @@ namespace ToDoList
         return View["category.cshtml", model];
       };
 
+
+
       //Post routes for forms
       Post["task/add_category"] = _ => {
         Category category = Category.Find(Request.Form["category-id"]);
         Task task = Task.Find(Request.Form["task-id"]);
         task.AddCategory(category);
+        bool retBool = (bool)Request.Form["task-done"];
+        task.SetCompleted(retBool);
         return View["success.cshtml"];
       };
       Post["category/add_task"] = _ => {
