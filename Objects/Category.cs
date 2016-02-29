@@ -29,6 +29,7 @@ namespace ToDoList
           return (idEquality && nameEquality);
         }
     }
+
     public int GetId()
     {
       return _id;
@@ -40,29 +41,6 @@ namespace ToDoList
     public void SetName(string newName)
     {
       _name = newName;
-    }
-    public void AddTask(Task newTask)
-    {
-      SqlConnection conn = DB.Connection();
-      conn.Open();
-
-      SqlCommand cmd = new SqlCommand("INSERT INTO categories_tasks (category_id, task_id) VALUES (@CategoryId, @TaskId)", conn);
-      SqlParameter categoryIdParameter = new SqlParameter();
-      categoryIdParameter.ParameterName = "@CategoryId";
-      categoryIdParameter.Value = this.GetId();
-      cmd.Parameters.Add(categoryIdParameter);
-
-      SqlParameter taskIdParameter = new SqlParameter();
-      taskIdParameter.ParameterName = "@TaskId";
-      taskIdParameter.Value = newTask.GetId();
-      cmd.Parameters.Add(taskIdParameter);
-
-      cmd.ExecuteNonQuery();
-
-      if (conn != null)
-      {
-        conn.Close();
-      }
     }
     public static List<Category> GetAll()
     {
@@ -164,6 +142,7 @@ namespace ToDoList
       }
       return foundCategory;
     }
+
     public List<Task> GetTasks()
     {
       SqlConnection conn = DB.Connection();
@@ -258,6 +237,7 @@ namespace ToDoList
     {
       SqlConnection conn = DB.Connection();
       conn.Open();
+
       SqlCommand cmd = new SqlCommand("DELETE FROM categories WHERE id = @CategoryId;", conn);
 
       SqlParameter categoryIdParameter = new SqlParameter();
