@@ -203,10 +203,10 @@ namespace ToDoList
         queryReader = taskQuery.ExecuteReader();
         while(queryReader.Read())
         {
-              int thisTaskId = queryReader.GetInt32(0);
-              string taskDescription = queryReader.GetString(1);
-              Task foundTask = new Task(taskDescription, thisTaskId);
-              tasks.Add(foundTask);
+          int thisTaskId = queryReader.GetInt32(0);
+          string taskDescription = queryReader.GetString(1);
+          Task foundTask = new Task(taskDescription, thisTaskId);
+          tasks.Add(foundTask);
         }
         if (queryReader != null)
         {
@@ -258,13 +258,36 @@ namespace ToDoList
     {
       SqlConnection conn = DB.Connection();
       conn.Open();
+      SqlCommand cmd = new SqlCommand("DELETE FROM categories WHERE id = @CategoryId;", conn);
 
-      SqlCommand cmd = new SqlCommand("DELETE FROM categories WHERE id = @CategoryId; DELETE FROM categories_tasks WHERE category_id = @CategoryId;", conn);
       SqlParameter categoryIdParameter = new SqlParameter();
       categoryIdParameter.ParameterName = "@CategoryId";
       categoryIdParameter.Value = this.GetId();
 
       cmd.Parameters.Add(categoryIdParameter);
+      cmd.ExecuteNonQuery();
+
+      if (conn != null)
+      {
+        conn.Close();
+      }
+    }
+    public void AddTask(Task newTask)
+    {
+      SqlConnection conn = DB.Connection();
+      conn.Open();
+
+      SqlCommand cmd = new SqlCommand("INSERT INTO categories_tasks (category_id, task_id) VALUES (@CategoryId, @TaskId)", conn);
+      SqlParameter categoryIdParameter = new SqlParameter();
+      categoryIdParameter.ParameterName = "@CategoryId";
+      categoryIdParameter.Value = this.GetId();
+      cmd.Parameters.Add(categoryIdParameter);
+
+      SqlParameter taskIdParameter = new SqlParameter();
+      taskIdParameter.ParameterName = "@TaskId";
+      taskIdParameter.Value = newTask.GetId();
+      cmd.Parameters.Add(taskIdParameter);
+
       cmd.ExecuteNonQuery();
 
       if (conn != null)
