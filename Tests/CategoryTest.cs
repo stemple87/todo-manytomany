@@ -77,27 +77,19 @@ namespace ToDoList
 
       //Assert
       Assert.Equal(testCategory, foundCategory);
-    } 
+    }
     [Fact]
     public void Test_GetTasks_RetrievesAllTasksWithCategory()
     {
       Category testCategory = new Category("Household chores");
       testCategory.Save();
-      Task firstTask = new Task("Mow the lawn", testCategory.GetId(), new DateTime(2017,3,3));
+      Task firstTask = new Task("Mow the lawn");
       firstTask.Save();
-      Task secondTask = new Task("Do the dishes", testCategory.GetId(), new DateTime(2017,3,3));
+      Task secondTask = new Task("Do the dishes");
       secondTask.Save();
-      List<Task> testTaskList = new List<Task> {firstTask, secondTask};
+      testCategory.AddTask(firstTask);
+      List<Task> testTaskList = new List<Task> {firstTask};
       List<Task> resultTaskList = testCategory.GetTasks();
-
-      foreach (var coin in testTaskList)
-      {
-        Console.WriteLine(coin.GetDate());
-      }
-      foreach (var coin in resultTaskList)
-      {
-        Console.WriteLine(coin.GetDate());
-      }
       Assert.Equal(testTaskList, resultTaskList);
     }
     [Fact]
@@ -128,22 +120,59 @@ namespace ToDoList
       Category testCategory2 = new Category(name2);
       testCategory2.Save();
 
-      Task testTask1 = new Task("Mow the lawn", testCategory1.GetId(),new DateTime(2017,3,3));
-      testTask1.Save();
-      Task testTask2 = new Task("Send emails", testCategory2.GetId(),new DateTime(2017,3,3));
-      testTask2.Save();
-
       //Act
       testCategory1.Delete();
       List<Category> resultCategories = Category.GetAll();
       List<Category> testCategoryList = new List<Category> {testCategory2};
 
-      List<Task> resultTasks = Task.GetAll();
-      List<Task> testTaskList = new List<Task> {testTask2};
-
       //Assert
       Assert.Equal(testCategoryList, resultCategories);
-      Assert.Equal(testTaskList, resultTasks);
+    }
+
+    [Fact]
+    public void Test_AddTask_AddsTaskToCategory()
+    {
+      //Arrange
+      Category testCategory = new Category("Household chores");
+      testCategory.Save();
+
+      Task testTask = new Task("Mow the lawn");
+      testTask.Save();
+
+      Task testTask2 = new Task("Water the garden");
+      testTask2.Save();
+
+      //Act
+      testCategory.AddTask(testTask);
+      testCategory.AddTask(testTask2);
+
+      List<Task> result = testCategory.GetTasks();
+      List<Task> testList = new List<Task>{testTask, testTask2};
+
+      //Assert
+      Assert.Equal(testList, result);
+    }
+
+    [Fact]
+    public void Test_GetTasks_ReturnsAllCategoryTasks()
+    {
+      //Arrange
+      Category testCategory = new Category("Household chores");
+      testCategory.Save();
+
+      Task testTask1 = new Task("Mow the lawn");
+      testTask1.Save();
+
+      Task testTask2 = new Task("Buy plane ticket");
+      testTask2.Save();
+
+      //Act
+      testCategory.AddTask(testTask1);
+      List<Task> savedTasks = testCategory.GetTasks();
+      List<Task> testList = new List<Task> {testTask1};
+
+      //Assert
+      Assert.Equal(testList, savedTasks);
     }
 
     public void Dispose()
