@@ -182,9 +182,10 @@ namespace ToDoList
         queryReader = taskQuery.ExecuteReader();
         while(queryReader.Read())
         {
-          int thisTaskId = queryReader.GetInt32(0);
+          int taskTaskId = queryReader.GetInt32(0);
           string taskDescription = queryReader.GetString(1);
-          Task foundTask = new Task(taskDescription, thisTaskId);
+          bool taskCompleted = queryReader.GetBoolean(2);
+          Task foundTask = new Task(taskDescription, taskCompleted, taskTaskId);
           tasks.Add(foundTask);
         }
         if (queryReader != null)
@@ -238,7 +239,7 @@ namespace ToDoList
       SqlConnection conn = DB.Connection();
       conn.Open();
 
-      SqlCommand cmd = new SqlCommand("DELETE FROM categories WHERE id = @CategoryId;", conn);
+      SqlCommand cmd = new SqlCommand("DELETE FROM categories WHERE id = @CategoryId; DELETE FROM categories_tasks WHERE category_id = @CategoryId;", conn);
 
       SqlParameter categoryIdParameter = new SqlParameter();
       categoryIdParameter.ParameterName = "@CategoryId";

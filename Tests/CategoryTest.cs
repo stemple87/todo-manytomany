@@ -83,9 +83,9 @@ namespace ToDoList
     {
       Category testCategory = new Category("Household chores");
       testCategory.Save();
-      Task firstTask = new Task("Mow the lawn");
+      Task firstTask = new Task("Mow the lawn", false);
       firstTask.Save();
-      Task secondTask = new Task("Do the dishes");
+      Task secondTask = new Task("Do the dishes", false);
       secondTask.Save();
       testCategory.AddTask(firstTask);
       List<Task> testTaskList = new List<Task> {firstTask};
@@ -136,10 +136,10 @@ namespace ToDoList
       Category testCategory = new Category("Household chores");
       testCategory.Save();
 
-      Task testTask = new Task("Mow the lawn");
+      Task testTask = new Task("Mow the lawn", false);
       testTask.Save();
 
-      Task testTask2 = new Task("Water the garden");
+      Task testTask2 = new Task("Water the garden", false);
       testTask2.Save();
 
       //Act
@@ -160,10 +160,10 @@ namespace ToDoList
       Category testCategory = new Category("Household chores");
       testCategory.Save();
 
-      Task testTask1 = new Task("Mow the lawn");
+      Task testTask1 = new Task("Mow the lawn", false);
       testTask1.Save();
 
-      Task testTask2 = new Task("Buy plane ticket");
+      Task testTask2 = new Task("Buy plane ticket", false);
       testTask2.Save();
 
       //Act
@@ -173,6 +173,28 @@ namespace ToDoList
 
       //Assert
       Assert.Equal(testList, savedTasks);
+    }
+
+    [Fact]
+    public void Test_Delete_DeletesCategoryAssociationsFromDatabase()
+    {
+      //Arrange
+      Task testTask = new Task("Mow the lawn", false);
+      testTask.Save();
+
+      string testName = "Home stuff";
+      Category testCategory = new Category(testName);
+      testCategory.Save();
+
+      //Act
+      testCategory.AddTask(testTask);
+      testCategory.Delete();
+
+      List<Category> resultTaskCategories = testTask.GetCategories();
+      List<Category> testTaskCategories = new List<Category> {};
+
+      //Assert
+      Assert.Equal(testTaskCategories, resultTaskCategories);
     }
 
     public void Dispose()
