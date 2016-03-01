@@ -9,7 +9,7 @@
     @{
       if(Model != null)
       {
-        <h2>Task: @Model["task"].GetDescription() Completed: @Model["task"].GetCompleted()</h2>
+        <h2>Task: @Model["task"].GetDescription() - Completed: @Model["task"].GetCompleted() - DueDate: @Model["task"].GetDueDate().ToString("MM/dd/yyyy")</h2>
         <hr />
         <form action='/tasks/@Model["task"].GetId()' method="post">
           <label for='description'>Update name</label>
@@ -29,6 +29,8 @@
               }
             }
           </select>
+          <label for='duedate'>Update due date</label>
+          <input type="date" id="duedate" name="duedate" value="@Model["task"].GetDueDate().ToString("MM/dd/yyyy")">
           <button type="submit" name="button">Update</button>
         </form>
         <hr />

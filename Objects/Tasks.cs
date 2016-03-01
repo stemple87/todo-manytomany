@@ -155,7 +155,7 @@ namespace ToDoList
       SqlDataReader rdr = null;
       conn.Open();
 
-      SqlCommand cmd = new SqlCommand("SELECT * FROM tasks;", conn);
+      SqlCommand cmd = new SqlCommand("SELECT * FROM tasks ORDER BY due_date DESC;", conn);
       rdr = cmd.ExecuteReader();
 
       while(rdr.Read())
@@ -282,26 +282,13 @@ namespace ToDoList
       return categories;
     }
 
-    public void Update(string newDescription, bool newBool, DateTime? newDate = null)
+    public void Update(string newDescription, bool newBool, DateTime newDate)
     {
       SqlConnection conn = DB.Connection();
       SqlDataReader rdr;
       conn.Open();
 
-      SqlCommand cmd = null;
-      if (newDate == null)
-      {
-        cmd = new SqlCommand("UPDATE tasks SET description = @NewDescription, completed = @NewBool OUTPUT INSERTED.description, INSERTED.completed WHERE id = @TasksId;", conn);
-      }
-      else
-      {
-        cmd = new SqlCommand("UPDATE tasks SET description = @NewDescription, completed = @NewBool, due_date = @NewDateTime  OUTPUT INSERTED.description, INSERTED.completed, INSERTED.due_date WHERE id = @TasksId;", conn);
-
-        SqlParameter newDateTimeParameter = new SqlParameter();
-        newDateTimeParameter.ParameterName = "@NewDateTime";
-        newDateTimeParameter.Value = newDescription;
-        cmd.Parameters.Add(newDateTimeParameter);
-      }
+      SqlCommand cmd = new SqlCommand("UPDATE tasks SET description = @NewDescription, completed = @NewBool, due_date = @NewDateTime  OUTPUT INSERTED.description, INSERTED.completed, INSERTED.due_date WHERE id = @TasksId;", conn);
 
       SqlParameter newDescriptionParameter = new SqlParameter();
       newDescriptionParameter.ParameterName = "@NewDescription";
@@ -313,6 +300,11 @@ namespace ToDoList
       newBoolParameter.Value = newBool;
       cmd.Parameters.Add(newBoolParameter);
 
+      SqlParameter newDateTimeParameter = new SqlParameter();
+      newDateTimeParameter.ParameterName = "@NewDateTime";
+      newDateTimeParameter.Value = newDate;
+      cmd.Parameters.Add(newDateTimeParameter);
+
       SqlParameter clientIdParameter = new SqlParameter();
       clientIdParameter.ParameterName = "@TasksId";
       clientIdParameter.Value = this.GetId();
@@ -323,10 +315,8 @@ namespace ToDoList
       {
         this._description = rdr.GetString(0);
         this._completed = rdr.GetBoolean(1);
-        if(newDate != null)
-        {
-          this._dueDate = rdr.GetDateTime(2);
-        }
+        this._dueDate = rdr.GetDateTime(2);
+
       }
 
       if (rdr != null)

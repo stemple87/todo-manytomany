@@ -62,8 +62,9 @@ namespace ToDoList
 
       Post["tasks/{id}"] = parameters => {
         Dictionary<string, object> model = new Dictionary<string, object>();
+        DateTime newDateTime = Convert.ToDateTime((string)Request.Form["duedate"]);
         Task SelectedTask = Task.Find(parameters.id);
-        SelectedTask.Update(Request.Form["description"],(bool)Request.Form["task-done"]);
+        SelectedTask.Update(Request.Form["description"],(bool)Request.Form["task-done"], newDateTime);
         List<Category> TaskCategories = SelectedTask.GetCategories();
         List<Category> AllCategories = Category.GetAll();
         model.Add("task", SelectedTask);
