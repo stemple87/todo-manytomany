@@ -26,8 +26,8 @@ namespace ToDoList
     public void Test_EqualOverrideTrueForSameDescription()
     {
       //Arrange, Act
-      Task firstTask = new Task("Mow the lawn", false);
-      Task secondTask = new Task("Mow the lawn", false);
+      Task firstTask = new Task("Mow the lawn", new DateTime(2016, 2, 2), false);
+      Task secondTask = new Task("Mow the lawn", new DateTime(2016, 2, 2), false);
 
       //Assert
       Assert.Equal(firstTask, secondTask);
@@ -37,7 +37,7 @@ namespace ToDoList
     public void Test_Save()
     {
       //Arrange
-      Task testTask = new Task("Mow the lawn", false);
+      Task testTask = new Task("Mow the lawn", new DateTime(2016, 2, 2), false);
       testTask.Save();
 
       //Act
@@ -52,7 +52,7 @@ namespace ToDoList
     public void Test_SaveAssignsIdToObject()
     {
       //Arrange
-      Task testTask = new Task("Mow the lawn", false);
+      Task testTask = new Task("Mow the lawn", new DateTime(2016, 2, 2), false);
       testTask.Save();
 
       //Act
@@ -69,7 +69,7 @@ namespace ToDoList
     public void Test_FindFindsTaskInDatabase()
     {
       //Arrange
-      Task testTask = new Task("Mow the lawn", false);
+      Task testTask = new Task("Mow the lawn", new DateTime(2016, 2, 2), false);
       testTask.Save();
 
       //Act
@@ -83,7 +83,7 @@ namespace ToDoList
     public void Test_AddCategory_AddsCategoryToTask()
     {
       //Arrange
-      Task testTask = new Task("Mow the lawn", false);
+      Task testTask = new Task("Mow the lawn", new DateTime(2016, 2, 2), false);
       testTask.Save();
 
       Category testCategory = new Category("Home stuff");
@@ -103,7 +103,7 @@ namespace ToDoList
     public void Test_GetCategories_ReturnsAllTaskCategories()
     {
       //Arrange
-      Task testTask = new Task("Mow the lawn", false);
+      Task testTask = new Task("Mow the lawn", new DateTime(2016, 2, 2), false);
       testTask.Save();
 
       Category testCategory1 = new Category("Home stuff");
@@ -129,7 +129,7 @@ namespace ToDoList
       testCategory.Save();
 
       string testDescription = "Mow the lawn";
-      Task testTask = new Task(testDescription);
+      Task testTask = new Task(testDescription, new DateTime(2016, 2, 2));
       testTask.Save();
 
       //Act

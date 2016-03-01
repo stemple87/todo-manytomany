@@ -14,6 +14,7 @@
         <form action='/tasks/@Model["task"].GetId()' method="post">
           <label for='description'>Update name</label>
           <input type="text" id="description" name="description" value="@Model["task"].GetDescription()">
+          <label for='task-done'>Task Complete?</label>
           <select id='task-done' name='task-done' type='text'>
             @{
               if(Model["task"].GetCompleted() == true)
@@ -53,7 +54,6 @@
           <option value='@category.GetId()'>@category.GetName()</option>
         }
       </select>
-      <label for='task-done'>Task Complete?</label>
       <button type='submit'>Add</button>
     </form>
     <p><a href="/">Return to Main Page</a></p>
